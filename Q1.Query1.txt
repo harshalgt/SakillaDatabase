@@ -1,0 +1,25 @@
+-- Question 1: Create a query that lists each movie, the film category it is classified in, and the number of times it has been rented out.
+
+/* Query:1 */
+WITH m_type AS (
+    SELECT
+        *
+    FROM
+        category cat
+        JOIN film_category f_cat ON cat.category_id = f_cat.category_id
+        JOIN film movie ON movie.film_id = f_cat.film_id
+        JOIN inventory i_vent ON i_vent.film_id = movie.film_id
+        JOIN rental rent ON rent.inventory_id = i_vent.inventory_id
+    WHERE
+        cat.name IN ('Animation', 'Children', 'Classics', 'Comedy', 'Family', 'Music'))
+SELECT
+    m_type.title film_title, m_type.name category_name, count(m_type.title) rental_count
+FROM
+    m_type
+GROUP BY
+    1,
+    2
+ORDER BY
+    category_name,
+    film_title
+LIMIT 12;

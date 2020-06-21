@@ -1,0 +1,18 @@
+/* Question 2: Can you provide a table with the movie titles and divide them into 4 levels (first_quarter, second_quarter, third_quarter, and final_quarter) based on the quartiles (25%, 50%, 75%) of the rental duration for movies across all categories? */
+
+/* Query:2 */
+
+WITH m_type AS
+
+(SELECT *
+FROM category cat
+JOIN film_category f_cat
+ON cat.category_id = f_cat.category_id
+JOIN film movie
+ON movie.film_id = f_cat.film_id
+WHERE cat.name IN ('Animation', 'Children','Classics','Comedy','Family','Music') )
+
+SELECT m_type.title, m_type.name, m_type.rental_duration,
+      NTILE(4) OVER (ORDER BY rental_duration) AS standard_quartile
+FROM m_type
+ORDER BY standard_quartile

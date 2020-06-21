@@ -1,0 +1,14 @@
+/* Question 4: Write a query that returns the store ID for the store, the year and month and the number of rental orders each store has fulfilled for that month. Your table should include a column for each of the following: year, month, store ID and count of rental orders fulfilled during that month. */
+
+/* Query:4 */
+
+WITH m_type AS
+(SELECT DATE_PART('month', rental_date) as Month, DATE_PART('year', rental_date) as Year, Store_id, COUNT (film_id) OVER (PARTITION BY DATE_TRUNC('month', rental_date) ORDER BY Store_id) as Count_rentals
+FROM rental rent
+JOIN inventory i_vent
+ON i_vent.inventory_id = rent.inventory_id)
+
+SELECT m_type.month rental_month, m_type.year rental_year, m_type.store_id, COUNT(Count_rentals) count_rentals
+FROM m_type
+GROUP BY 1, 2, 3
+ORDER BY count_rentals DESC

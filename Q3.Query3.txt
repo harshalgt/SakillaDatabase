@@ -1,0 +1,20 @@
+/* Question 3: provide a table with the family-friendly film category, each of the quartiles, and the corresponding count of movies within each combination of film category for each corresponding rental duration category. */
+
+/* Query:3 */
+
+WITH m_type AS
+(SELECT cat.name category,
+	NTILE(4) OVER (ORDER BY movie.rental_duration) AS standard_quartile
+
+FROM category cat
+JOIN film_category f_cat
+ON cat.category_id = f_cat.category_id
+JOIN film movie
+ON movie.film_id = f_cat.film_id
+WHERE cat.name IN ('Animation', 'Children','Classics','Comedy','Family','Music')
+ORDER BY category, standard_quartile)
+
+SELECT m_type.category, m_type.standard_quartile, COUNT(*)
+FROM m_type
+GROUP BY 1,2
+ORDER BY category, standard_quartile
